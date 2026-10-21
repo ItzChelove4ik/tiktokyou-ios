@@ -107,20 +107,21 @@ static BOOL shouldFilterAweme(id model) {
 - (BOOL)progressBarVisible { return [BHIManager alwaysShowProgressBar] || %orig; }
 %end
 
+%end // group
+
+// AWEAwemeACLItem: watermark removal (outside group — Logos %orig quirk)
 %hook AWEAwemeACLItem
 - (void)setWatermarkType:(NSUInteger)arg1 {
     if ([BHIManager removeWatermark]) {
-        %orig((NSUInteger)1);
-    } else {
-        %orig;
+        return %orig(1);
     }
+    return %orig;
 }
 - (NSUInteger)watermarkType {
-    if ([BHIManager removeWatermark]) return (NSUInteger)1;
+    if ([BHIManager removeWatermark]) return 1;
     return %orig;
 }
 %end
-%end // group
 
 // ============================================================
 // Группа: Трансляции off
