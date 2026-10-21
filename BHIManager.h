@@ -38,6 +38,8 @@
 
 // helpers
 + (void)saveMedia:(id)item fileExtension:(id)fileExtension;
++ (NSString *)getDownloadingPersent:(float)per;
++ (BOOL)shareSheet;
 + (void)showSaveVC:(id)item;
 + (void)cleanCache;
 + (BOOL)isEmpty:(NSURL *)url;

@@ -107,6 +107,17 @@ static UIViewController *topMostControllerInternal(void) {
     }];
 }
 
++ (NSString *)getDownloadingPersent:(float)per {
+    NSNumberFormatter *nf = [[NSNumberFormatter alloc] init];
+    [nf setNumberStyle:NSNumberFormatterPercentStyle];
+    return [nf stringFromNumber:@(per)];
+}
+
++ (BOOL)shareSheet {
+    // TikTok You: download flows always open share sheet (as in base)
+    return YES;
+}
+
 + (void)cleanCache {
     NSArray *exts = @[@"mp4", @"png", @"jpeg", @"mp3", @"m4a", @"mov", @"tmp"];
     NSString *docs = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).firstObject;

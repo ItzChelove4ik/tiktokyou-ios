@@ -113,9 +113,10 @@ static BOOL shouldFilterAweme(id model) {
 %hook AWEAwemeACLItem
 - (void)setWatermarkType:(NSUInteger)arg1 {
     if ([BHIManager removeWatermark]) {
-        return %orig(1);
+        %orig(1);
+    } else {
+        %orig;
     }
-    return %orig;
 }
 - (NSUInteger)watermarkType {
     if ([BHIManager removeWatermark]) return 1;
@@ -261,7 +262,8 @@ static BOOL shouldFilterAweme(id model) {
             }
             c.queryItems = kept.count ? kept : nil;
             NSString *clean = c.URL.absoluteString;
-            return %orig(clean);
+            %orig(clean);
+            return;
         }
     }
     %orig;
