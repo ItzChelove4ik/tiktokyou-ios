@@ -132,6 +132,8 @@
 + (id)rawModelFromLiveRoomModel:(id)arg1;
 + (id)aweLiveRoom_subModelPropertyKey;
 - (void)live_callInitWithDictyCategoryMethod:(id)arg1;
+- (BOOL)progressBarDraggable;
+- (BOOL)progressBarVisible;
 @end
 
 @interface AWEUserWorkCollectionViewCell: UICollectionView

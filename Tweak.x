@@ -103,8 +103,14 @@ static BOOL shouldFilterAweme(id model) {
     if (orig && shouldFilterAweme(orig)) return nil;
     return orig;
 }
-- (BOOL)progressBarDraggable { return [BHIManager alwaysShowProgressBar] || %orig; }
-- (BOOL)progressBarVisible { return [BHIManager alwaysShowProgressBar] || %orig; }
+- (BOOL)progressBarDraggable {
+    if ([BHIManager alwaysShowProgressBar]) return YES;
+    return %orig;
+}
+- (BOOL)progressBarVisible {
+    if ([BHIManager alwaysShowProgressBar]) return YES;
+    return %orig;
+}
 %end
 
 %end // group
