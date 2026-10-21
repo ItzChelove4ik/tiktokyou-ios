@@ -109,10 +109,14 @@ static BOOL shouldFilterAweme(id model) {
 
 %hook AWEAwemeACLItem
 - (void)setWatermarkType:(NSUInteger)arg1 {
-    if ([BHIManager removeWatermark]) { %orig(1); } else { %orig; }
+    if ([BHIManager removeWatermark]) {
+        %orig((NSUInteger)1);
+    } else {
+        %orig;
+    }
 }
 - (NSUInteger)watermarkType {
-    if ([BHIManager removeWatermark]) return 1;
+    if ([BHIManager removeWatermark]) return (NSUInteger)1;
     return %orig;
 }
 %end
