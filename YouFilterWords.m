@@ -79,7 +79,7 @@
         preferredStyle:UIAlertControllerStyleAlert];
     [alert addTextFieldWithConfigurationHandler:^(UITextField *tf) { tf.placeholder = @"Слово или тег"; }];
     [alert addAction:[UIAlertAction actionWithTitle:@"Добавить" style:UIAlertActionStyleDefault handler:^(UIAlertAction *a) {
-        NSString *w = alert.textFields.firstObject.text.trimmingCharactersInSet:[NSCharacterSet whitespaceSet]];
+        NSString *w = [alert.textFields.firstObject.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
         if (w.length) {
             [self.words addObject:w];
             [self save];
