@@ -6,7 +6,12 @@
 #import "BHMultipleDownload.h"
 #import "JGProgressHUD/JGProgressHUD.h"
 #import <Photos/Photos.h>
-#import <CoreTelephony/CoreTelephony.h>
+@interface CTCarrier: NSObject
+- (NSString *)mobileCountryCode;
+- (NSString *)mobileNetworkCode;
+- (NSString *)isoCountryCode;
+- (void)setIsoCountryCode:(NSString *)arg1;
+@end
 
 @interface TTKStoreRegionService: NSObject
 - (id)storeRegion;
