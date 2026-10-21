@@ -2,13 +2,10 @@
 #import <Foundation/Foundation.h>
 #import <SafariServices/SafariServices.h>
 #import "BHIManager.h"
-#import "SecurityViewController.h"
 #import "BHDownload.h"
 #import "BHMultipleDownload.h"
 #import "JGProgressHUD/JGProgressHUD.h"
 #import <Photos/Photos.h>
-#import "Settings/ViewController.h"
-#import "Settings/PlaybackSpeed.h"
 
 @interface AppDelegate : NSObject <UIApplicationDelegate>
 @end
