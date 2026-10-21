@@ -97,7 +97,7 @@ jobs:
         run: |
           python3 tools/replace_icon.py TikTokYou.ipa "${ICON_VARIANT:-default}"
 
-      - name: QA: verify IPA structure and hooked classes
+      - name: "QA: verify IPA structure and hooked classes"
         run: |
           python3 tools/qa_ipa.py TikTokYou.ipa
 
