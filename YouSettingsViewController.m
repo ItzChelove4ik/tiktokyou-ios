@@ -154,17 +154,26 @@ typedef NS_ENUM(NSInteger, YouRowKind) {
     YouRow *likesRow = [YouRow new];
     likesRow.title = @"Лайки"; likesRow.kind = YouRowButton;
     likesRow.detail = [self formatFilterValue:[BHIManager filterMinLikes]];
-    likesRow.action = ^{ [self promptNumber:@"Минимум лайков" key:@"hide_by_likes" hint:@"Скрывает видео с меньшим числом лайков" refresh:^{ likesRow.detail = [self formatFilterValue:[BHIManager filterMinLikes]]; [self.table reloadData]; }]; };
+    {
+    __weak YouRow *wRow = likesRow;
+    likesRow.action = ^{ [self promptNumber:@"Минимум лайков" key:@"hide_by_likes" hint:@"Скрывает видео с меньшим числом лайков" refresh:^{ wRow.detail = [self formatFilterValue:[BHIManager filterMinLikes]]; [self.table reloadData]; }]; };
+}
 
     YouRow *viewsRow = [YouRow new];
     viewsRow.title = @"Просмотры"; viewsRow.kind = YouRowButton;
     viewsRow.detail = [self formatFilterValue:[BHIManager filterMinViews]];
-    viewsRow.action = ^{ [self promptNumber:@"Минимум просмотров" key:@"hide_by_views" hint:@"Скрывает видео с меньшим числом просмотров" refresh:^{ viewsRow.detail = [self formatFilterValue:[BHIManager filterMinViews]]; [self.table reloadData]; }]; };
+    {
+    __weak YouRow *wRow = viewsRow;
+    viewsRow.action = ^{ [self promptNumber:@"Минимум просмотров" key:@"hide_by_views" hint:@"Скрывает видео с меньшим числом просмотров" refresh:^{ wRow.detail = [self formatFilterValue:[BHIManager filterMinViews]]; [self.table reloadData]; }]; };
+}
 
     YouRow *dateRow = [YouRow new];
     dateRow.title = @"Дата публикации"; dateRow.kind = YouRowButton;
     dateRow.detail = [BHIManager filterMinDate] > 0 ? [self formatDateFilter:[BHIManager filterMinDate]] : @"Выкл";
-    dateRow.action = ^{ [self promptDateWithHint:@"Скрывает более старые видео" key:@"hide_by_publish_date" refresh:^{ dateRow.detail = [BHIManager filterMinDate] > 0 ? [self formatDateFilter:[BHIManager filterMinDate]] : @"Выкл"; [self.table reloadData]; }]; };
+    {
+    __weak YouRow *wRow = dateRow;
+    dateRow.action = ^{ [self promptDateWithHint:@"Скрывает более старые видео" key:@"hide_by_publish_date" refresh:^{ wRow.detail = [BHIManager filterMinDate] > 0 ? [self formatDateFilter:[BHIManager filterMinDate]] : @"Выкл"; [self.table reloadData]; }]; };
+}
 
     YouSection *filters = [YouSection new];
     filters.title = @"Фильтры контента";
@@ -307,7 +316,7 @@ typedef NS_ENUM(NSInteger, YouRowKind) {
     NSString *uid = nil;
     Class accountServiceClass = NSClassFromString(@"AWEAccountService");
     if (accountServiceClass) {
-        id sharedService = [accountServiceClass respondsToSelector:@selector(sharedService)] ? [accountServiceClass sharedService] : nil;
+        id sharedService = [accountServiceClass respondsToSelector:@selector(sharedService)] ? [accountServiceClass performSelector:@selector(sharedService)] : nil;
         id userModel = sharedService ? [sharedService valueForKey:@"currentUserModel"] : nil;
         uid = userModel ? [userModel valueForKey:@"uid"] : nil;
     }
@@ -364,7 +373,7 @@ typedef NS_ENUM(NSInteger, YouRowKind) {
 }
 
 - (void)promptDateWithHint:(NSString *)hint key:(NSString *)key refresh:(void(^)(void))refresh {
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Дата публикации" message:hint preferredStyle:UIAlertActionStyleAlert];
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Дата публикации" message:hint preferredStyle:UIAlertControllerStyleAlert];
     [alert addTextFieldWithConfigurationHandler:^(UITextField *tf) {
         tf.placeholder = @"ГГГГ-ММ-ДД";
         NSDateFormatter *df = [[NSDateFormatter alloc] init];
@@ -387,7 +396,7 @@ typedef NS_ENUM(NSInteger, YouRowKind) {
 }
 
 - (NSString *)formatFilterValue:(long long)v {
-    return v > 0 ? [NSString stringWithFormat:@"%@", @(v)] : @"Выкл";
+    return v > 0 ? [NSString stringWithFormat:@"%lld", v] : @"Выкл";
 }
 
 - (NSString *)formatDateFilter:(long long)ts {
