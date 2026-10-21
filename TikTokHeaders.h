@@ -6,6 +6,32 @@
 #import "BHMultipleDownload.h"
 #import "JGProgressHUD/JGProgressHUD.h"
 #import <Photos/Photos.h>
+#import <CoreTelephony/CoreTelephony.h>
+
+@interface TTKStoreRegionService: NSObject
+- (id)storeRegion;
+- (id)getStoreRegion;
+- (void)setStoreRegion:(id)arg1;
+@end
+
+@interface TIKTOKRegionManager: NSObject
++ (NSString *)systemRegion;
++ (id)region;
++ (id)mccmnc;
++ (id)storeRegion;
++ (id)currentRegionV2;
++ (id)localRegion;
+@end
+
+@interface SparkViewController: UIViewController
+- (void)loadURL:(id)arg1 withString:(id)arg2;
+@end
+
+@interface AWELiveFeedEntranceView: UIView
+- (void)didMoveToWindow;
+@end
+
+
 
 @interface AppDelegate : NSObject <UIApplicationDelegate>
 @end

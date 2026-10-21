@@ -136,7 +136,9 @@ static BOOL shouldFilterAweme(id model) {
 %group TikTokYouLives
 %hook AWEAwemeModel
 - (void)live_callInitWithDictyCategoryMethod:(id)arg1 {
-    if (![BHIManager hideLives]) { %orig; }
+    if (![BHIManager hideLives]) {
+        %orig;
+    }
 }
 + (id)liveStreamURLJSONTransformer {
     if ([BHIManager hideLives]) return nil;
