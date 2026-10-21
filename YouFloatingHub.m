@@ -51,15 +51,10 @@ static UIWindow *youHubWindow = nil;
 
 @end
 
-@interface YouFloatingHub : NSObject
+@interface YouFloatingHub ()
 @property (nonatomic, strong) YouHubButton *button;
-@property (nonatomic, strong) UIImageView *iconView;
 @property (nonatomic, strong) UIView *dimOverlay;
-+ (YouFloatingHub *)shared;
-- (void)show;
-- (void)toggleBurnout;
 @end
-
 @implementation YouFloatingHub
 
 + (YouFloatingHub *)shared {
