@@ -4,6 +4,7 @@
 //
 #import <UIKit/UIKit.h>
 #import "BHIManager.h"
+#import "YouFloatingHub.h"
 #import "YouSettingsViewController.h"
 
 #define YOU_ACCENT  [UIColor colorWithRed:0xFE/255.0 green:0x2B/255.0 blue:0x54/255.0 alpha:1]

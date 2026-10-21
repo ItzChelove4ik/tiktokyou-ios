@@ -3,6 +3,7 @@
 //
 #import <UIKit/UIKit.h>
 #import "BHIManager.h"
+#import "YouFilterWords.h"
 
 #define YOU_BG      [UIColor colorWithRed:0x1E/255.0 green:0x1E/255.0 blue:0x1E/255.0 alpha:1]
 #define YOU_CARD    [UIColor colorWithRed:0x2A/255.0 green:0x2A/255.0 blue:0x2A/255.0 alpha:1]

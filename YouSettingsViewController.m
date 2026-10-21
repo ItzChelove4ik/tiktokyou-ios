@@ -5,6 +5,7 @@
 
 #import <UIKit/UIKit.h>
 #import "BHIManager.h"
+#import "YouSettingsViewController.h"
 #import "YouRegionPicker.h"
 #import "YouFilterWords.h"
 #import "YouHookLogVC.h"
