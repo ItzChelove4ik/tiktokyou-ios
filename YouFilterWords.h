@@ -1,3 +1,3 @@
 #import <UIKit/UIKit.h>
-@interface YouFilterWords : UIViewController
+@interface YouFilterWords : UIViewController <UITableViewDataSource, UITableViewDelegate>
 @end

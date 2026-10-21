@@ -1,5 +1,4 @@
 #import <UIKit/UIKit.h>
-#import "BHIManager.h"
-@interface YouRegionPicker : UIViewController
+@interface YouRegionPicker : UIViewController <UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate>
 @property (nonatomic, copy) void (^onSelect)(NSDictionary *region);
 @end

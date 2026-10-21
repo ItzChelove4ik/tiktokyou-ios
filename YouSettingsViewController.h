@@ -1,3 +1,3 @@
 #import <UIKit/UIKit.h>
-@interface YouSettingsViewController : UIViewController
+@interface YouSettingsViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
 @end
