@@ -138,10 +138,22 @@ static BOOL shouldFilterAweme(id model) {
 - (void)live_callInitWithDictyCategoryMethod:(id)arg1 {
     if (![BHIManager hideLives]) { %orig; }
 }
-+ (id)liveStreamURLJSONTransformer { if ([BHIManager hideLives]) return nil; return %orig; }
-+ (id)relatedLiveJSONTransformer { if ([BHIManager hideLives]) return nil; return %orig; }
-+ (id)rawModelFromLiveRoomModel:(id)arg1 { if ([BHIManager hideLives]) return nil; return %orig; }
-+ (id)aweLiveRoom_subModelPropertyKey { if ([BHIManager hideLives]) return nil; return %orig; }
++ (id)liveStreamURLJSONTransformer {
+    if ([BHIManager hideLives]) return nil;
+    return %orig;
+}
++ (id)relatedLiveJSONTransformer {
+    if ([BHIManager hideLives]) return nil;
+    return %orig;
+}
++ (id)rawModelFromLiveRoomModel:(id)arg1 {
+    if ([BHIManager hideLives]) return nil;
+    return %orig;
+}
++ (id)aweLiveRoom_subModelPropertyKey {
+    if ([BHIManager hideLives]) return nil;
+    return %orig;
+}
 %end
 %hook AWELiveFeedEntranceView
 - (void)didMoveToWindow {
@@ -190,12 +202,30 @@ static BOOL shouldFilterAweme(id model) {
 %end
 
 %hook TIKTOKRegionManager
-+ (NSString *)systemRegion { if ([BHIManager regionSpoofEnabled] && [RegionInfo currentRegion]) return [RegionInfo currentRegion][@"code"]; return %orig; }
-+ (id)region { if ([BHIManager regionSpoofEnabled] && [RegionInfo currentRegion]) return [RegionInfo currentRegion][@"code"]; return %orig; }
-+ (id)mccmnc { if ([BHIManager regionSpoofEnabled] && [RegionInfo currentRegion]) return [NSString stringWithFormat:@"%@%@", [RegionInfo currentRegion][@"mcc"], [RegionInfo currentRegion][@"mnc"]]; return %orig; }
-+ (id)storeRegion { if ([BHIManager regionSpoofEnabled] && [RegionInfo currentRegion]) return [RegionInfo currentRegion][@"code"]; return %orig; }
-+ (id)currentRegionV2 { if ([BHIManager regionSpoofEnabled] && [RegionInfo currentRegion]) return [RegionInfo currentRegion][@"code"]; return %orig; }
-+ (id)localRegion { if ([BHIManager regionSpoofEnabled] && [RegionInfo currentRegion]) return [RegionInfo currentRegion][@"code"]; return %orig; }
++ (NSString *)systemRegion {
+    if ([BHIManager regionSpoofEnabled] && [RegionInfo currentRegion]) return [RegionInfo currentRegion][@"code"];
+    return %orig;
+}
++ (id)region {
+    if ([BHIManager regionSpoofEnabled] && [RegionInfo currentRegion]) return [RegionInfo currentRegion][@"code"];
+    return %orig;
+}
++ (id)mccmnc {
+    if ([BHIManager regionSpoofEnabled] && [RegionInfo currentRegion]) return [NSString stringWithFormat:@"%@%@", [RegionInfo currentRegion][@"mcc"], [RegionInfo currentRegion][@"mnc"]];
+    return %orig;
+}
++ (id)storeRegion {
+    if ([BHIManager regionSpoofEnabled] && [RegionInfo currentRegion]) return [RegionInfo currentRegion][@"code"];
+    return %orig;
+}
++ (id)currentRegionV2 {
+    if ([BHIManager regionSpoofEnabled] && [RegionInfo currentRegion]) return [RegionInfo currentRegion][@"code"];
+    return %orig;
+}
++ (id)localRegion {
+    if ([BHIManager regionSpoofEnabled] && [RegionInfo currentRegion]) return [RegionInfo currentRegion][@"code"];
+    return %orig;
+}
 %end
 %end // group
 
