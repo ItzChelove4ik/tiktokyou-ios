@@ -358,7 +358,7 @@ typedef NS_ENUM(NSInteger, YouRowKind) {
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:title message:hint preferredStyle:UIAlertControllerStyleAlert];
     [alert addTextFieldWithConfigurationHandler:^(UITextField *tf) {
         tf.keyboardType = UIKeyboardTypeNumberPad;
-        tf.text = [NSString stringWithFormat:@"%lld", [[NSUserDefaults standardUserDefaults] integerForKey:key]];
+        tf.text = [NSString stringWithFormat:@"%ld", (long)[[NSUserDefaults standardUserDefaults] integerForKey:key]];
     }];
     [alert addAction:[UIAlertAction actionWithTitle:@"ОК" style:UIAlertActionStyleDefault handler:^(UIAlertAction *a) {
         long long v = [alert.textFields.firstObject.text longLongValue];
