@@ -1,0 +1,109 @@
+name: Build TikTok You IPA
+
+on:
+  workflow_dispatch:
+    inputs:
+      ipa_url:
+        description: "Прямая ссылка на РАСШИФРОВАННЫЙ TikTok IPA (необязательно: если пусто, IPA берётся из черновика релиза tiktok-ipa)"
+        required: false
+        type: string
+        default: ""
+      display_name:
+        description: "Название приложения (по умолчанию: TikTok You)"
+        required: false
+        type: string
+        default: "TikTok You"
+      icon_variant:
+        description: "Иконка приложения: default | metal | hlx | md (по умолчанию default)"
+        required: false
+        type: string
+        default: "default"
+
+jobs:
+  build:
+    runs-on: macos-latest
+    timeout-minutes: 90
+    permissions:
+      contents: write
+    env:
+      IPA_URL: ${{ inputs.ipa_url }}
+      DISPLAY_NAME: ${{ inputs.display_name }}
+      ICON_VARIANT: ${{ inputs.icon_variant }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Restore Theos and iOS SDK cache
+        uses: actions/cache@v4
+        with:
+          path: ~/theos
+          key: theos-sdk-iphoneos16.5-v1
+
+      - name: Install Theos and iOS SDK
+        run: |
+          if [ ! -d "$HOME/theos/makefiles" ]; then
+            git clone --recursive https://github.com/theos/theos.git "$HOME/theos"
+          fi
+          if [ ! -d "$HOME/theos/sdks/iPhoneOS16.5.sdk" ]; then
+            git clone --filter=blob:none --sparse https://github.com/theos/sdks.git "$RUNNER_TEMP/sdks"
+            cd "$RUNNER_TEMP/sdks"
+            git sparse-checkout set iPhoneOS16.5.sdk
+            mkdir -p "$HOME/theos/sdks"
+            cp -R iPhoneOS16.5.sdk "$HOME/theos/sdks/"
+          fi
+          echo "THEOS=$HOME/theos" >> "$GITHUB_ENV"
+
+      - name: Install build tools
+        run: brew install ldid make dpkg || true
+
+      - name: Build tweak (.deb)
+        run: |
+          gmake package FINALPACKAGE=1
+          ls -la packages
+
+      - name: Upload dylib artifact (debug)
+        uses: actions/upload-artifact@v4
+        with:
+          name: TikTokYou-dylib
+          path: packages/*.deb
+
+      - name: Download decrypted TikTok IPA
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ -n "$IPA_URL" ]; then
+            curl -fL --retry 3 -o TikTok.ipa "$IPA_URL"
+          else
+            ASSET_URL=$(gh api "repos/$GITHUB_REPOSITORY/releases" --jq '[.[] | select(.draft) | .assets[] | select(.name | endswith(".ipa"))][0].url')
+            test -n "$ASSET_URL" || { echo "No IPA in draft release tiktok-ipa — загрузите расшифрованный IPA в черновик релиза"; exit 1; }
+            curl -fL --retry 3 -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/octet-stream" -o TikTok.ipa "$ASSET_URL"
+          fi
+          ls -la TikTok.ipa
+
+      - name: Install cyan
+        run: |
+          python3 -m venv "$HOME/cyan-venv"
+          "$HOME/cyan-venv/bin/pip" install --force-reinstall https://github.com/asdfzxcvbn/pyzule-rw/archive/main.zip
+          echo "$HOME/cyan-venv/bin" >> "$GITHUB_PATH"
+
+      - name: Inject tweak into IPA and set name/icon
+        run: |
+          NAME="${DISPLAY_NAME:-TikTok You}"
+          cyan -i TikTok.ipa -o TikTokYou.ipa -n "$NAME" -uwf packages/*.deb
+          ls -la TikTokYou.ipa
+
+      - name: Replace app icon (TikTok You)
+        run: |
+          python3 tools/replace_icon.py TikTokYou.ipa "${ICON_VARIANT:-default}"
+
+      - name: QA: verify IPA structure and hooked classes
+        run: |
+          python3 tools/qa_ipa.py TikTokYou.ipa
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: TikTokYou-ipa
+          path: TikTokYou.ipa
+          if-no-files-found: error

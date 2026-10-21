@@ -1,0 +1,9 @@
+Package: com.itzch.tiktokyou
+Name: TikTok You
+Version: 1.0
+Architecture: iphoneos-arm
+Description: TikTok You mod menu — port of Android TikTok You v5.0 features to iOS
+Maintainer: ItzCh
+Author: TikTok You port (base: BHTikTokPlusPlus by raulsaeed)
+Section: Tweaks
+Depends: mobilesubstrate

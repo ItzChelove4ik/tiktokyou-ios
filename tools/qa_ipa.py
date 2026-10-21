@@ -1,0 +1,90 @@
+#!/usr/bin/env python3
+"""qa_ipa.py — QA-проверки собранного IPA (Фаза 7.1):
+1. Структура: Payload/*.app, Info.plist, наличие бинарника.
+2. Наличие dylib мода в .app и LC_LOAD_DYLIB ссылки в бинарнике.
+3. class-dump-подобная проверка хукаемых классов: использует nm/strings на Mach-O
+   бинарнике для поиска имен классов Obj-C (__objc_classname секция).
+Отчёт печатается и падает, если структура битая.
+"""
+import os
+import plistlib
+import re
+import subprocess
+import sys
+import tempfile
+import zipfile
+
+HOOKED_CLASSES = [
+    # core feature hooks
+    "AWEAwemeModel", "AWEAwemeACLItem", "CTCarrier", "TTKStoreRegionService",
+    "TIKTOKRegionManager", "SparkViewController", "TTKSettingsBaseCellPlugin",
+    "AWESettingsNormalSectionViewModel", "AWELiveFeedEntranceView",
+    # download
+    "AWEFeedViewTemplateCell", "AWEAwemeDetailTableViewCell", "AWEURLModel",
+    "AWEFeedCellViewController", "AWEAwemeBaseViewController",
+    # jb bypass
+    "BDADeviceHelper", "TTInstallUtil", "AppsFlyerUtils", "AWEAPMManager",
+]
+
+
+def main():
+    ipa = sys.argv[1]
+    tmp = tempfile.mkdtemp()
+    with zipfile.ZipFile(ipa) as z:
+        names = z.namelist()
+        z.extractall(tmp)
+
+    # 1. structure
+    app_dir = None
+    for root, dirs, files in os.walk(os.path.join(tmp, "Payload")):
+        if root.endswith(".app"):
+            app_dir = root
+            break
+    assert app_dir, "QA FAIL: no .app in Payload"
+    app_name = os.path.basename(app_dir)
+    binary = os.path.join(app_dir, app_name[:-4])
+    assert os.path.exists(binary), f"QA FAIL: binary {binary} missing"
+
+    pl = None
+    with open(os.path.join(app_dir, "Info.plist"), "rb") as f:
+        pl = plistlib.load(f)
+    print(f"[qa] app: {app_name}")
+    print(f"[qa] display name: {pl.get('CFBundleDisplayName')}")
+    print(f"[qa] version: {pl.get('CFBundleShortVersionString')} ({pl.get('CFBundleVersion')})")
+    print(f"[qa] bundle id: {pl.get('CFBundleIdentifier')}")
+
+    # 2. dylib presence
+    dylibs = [f for f in os.listdir(app_dir) if f.endswith(".dylib")]
+    assert dylibs, "QA FAIL: no injected dylib in .app"
+    print(f"[qa] dylibs: {dylibs}")
+
+    linked = subprocess.run(["otool", "-L", binary], capture_output=True, text=True).stdout
+    missing_link = [d for d in dylibs if d not in linked]
+    assert not missing_link, f"QA FAIL: dylib not linked into binary: {missing_link}"
+    print("[qa] dylib load commands: OK")
+
+    # 3. hooked classes present in binary (ObjC class names in __DATA __objc_classname)
+    classnames = set()
+    try:
+        out = subprocess.run(["strings", "-arch", "arm64", binary],
+                             capture_output=True, text=True, timeout=120).stdout
+        classnames = set(out.split())
+    except Exception as e:
+        print(f"[qa] WARN: strings failed: {e}")
+
+    print("[qa] class check (hooked classes found in binary):")
+    found = 0
+    for c in HOOKED_CLASSES:
+        ok = c in classnames
+        if ok:
+            found += 1
+        print(f"  {'OK ' if ok else 'MISS'} {c}")
+    print(f"[qa] hooked classes found: {found}/{len(HOOKED_CLASSES)}")
+    if found < len(HOOKED_CLASSES):
+        print("[qa] NOTE: some hooked classes are missing in this TikTok version — "
+              "those features degrade to OFF at runtime (see hook log in app).")
+    print("[qa] ALL STRUCTURE CHECKS PASSED")
+
+
+if __name__ == "__main__":
+    main()
