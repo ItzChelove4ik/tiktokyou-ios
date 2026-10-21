@@ -20,7 +20,7 @@ static UIViewController *topMostControllerInternal(void) {
 + (BOOL)simpleMode { return [[NSUserDefaults standardUserDefaults] boolForKey:@"simple_mode"]; }
 + (BOOL)regionSpoofEnabled {
     // default YES: recommendations in Russia without VPN (base behavior preserved)
-    NSObject *v = [[NSUserDefaults standardUserDefaults] objectForKey:@"region_spoof_enabled"];
+    id v = [[NSUserDefaults standardUserDefaults] objectForKey:@"region_spoof_enabled"];
     return v ? [v boolValue] : YES;
 }
 + (NSString *)selectedRegionISO {
@@ -29,15 +29,15 @@ static UIViewController *topMostControllerInternal(void) {
 }
 + (BOOL)alwaysShowProgressBar { return [[NSUserDefaults standardUserDefaults] boolForKey:@"always_show_progress_bar"]; }
 + (BOOL)downloadButton {
-    NSObject *v = [[NSUserDefaults standardUserDefaults] objectForKey:@"download_button"];
+    id v = [[NSUserDefaults standardUserDefaults] objectForKey:@"download_button"];
     return v ? [v boolValue] : YES;
 }
 + (BOOL)removeWatermark {
-    NSObject *v = [[NSUserDefaults standardUserDefaults] objectForKey:@"remove_watermark"];
+    id v = [[NSUserDefaults standardUserDefaults] objectForKey:@"remove_watermark"];
     return v ? [v boolValue] : YES;
 }
 + (BOOL)skipQualityPicker {
-    NSObject *v = [[NSUserDefaults standardUserDefaults] objectForKey:@"skip_quality_picker"];
+    id v = [[NSUserDefaults standardUserDefaults] objectForKey:@"skip_quality_picker"];
     return v ? [v boolValue] : YES;
 }
 + (BOOL)photoSave { return [[NSUserDefaults standardUserDefaults] boolForKey:@"tiktokyou_photo_save"]; }
@@ -109,7 +109,8 @@ static UIViewController *topMostControllerInternal(void) {
 
 + (void)cleanCache {
     NSArray *exts = @[@"mp4", @"png", @"jpeg", @"mp3", @"m4a", @"mov", @"tmp"];
-    for (NSString *dir in @[[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).firstObject], NSTemporaryDirectory()]) {
+    NSString *docs = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).firstObject;
+    for (NSString *dir in @[docs, NSTemporaryDirectory()]) {
         NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:dir error:nil];
         for (NSString *f in files) {
             NSString *ext = [[f pathExtension] lowercaseString];

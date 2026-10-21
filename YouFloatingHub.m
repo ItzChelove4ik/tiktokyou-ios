@@ -30,13 +30,13 @@ static UIWindow *youHubWindow = nil;
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     UITouch *t = touches.anyObject;
-    _dragStart = [t locationInView:superview];
+    _dragStart = [t locationInView:self.superview];
     [super touchesBegan:touches withEvent:event];
 }
 
 - (void)touchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     UITouch *t = touches.anyObject;
-    CGPoint p = [t locationInView:superview];
+    CGPoint p = [t locationInView:self.superview];
     self.center = CGPointMake(self.center.x + (p.x - _dragStart.x), self.center.y + (p.y - _dragStart.y));
     _dragStart = p;
     [super touchesMoved:touches withEvent:event];
