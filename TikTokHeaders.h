@@ -28,10 +28,6 @@
 + (id)localRegion;
 @end
 
-@interface SparkViewController: UIViewController
-- (void)loadURL:(id)arg1 withString:(id)arg2;
-@end
-
 @interface AWELiveFeedEntranceView: UIView
 - (void)didMoveToWindow;
 @end
