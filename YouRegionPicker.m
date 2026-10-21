@@ -11,10 +11,6 @@
 #define YOU_SUBTEXT [UIColor colorWithRed:0x99/255.0 green:0x99/255.0 blue:0x99/255.0 alpha:1]
 #define YOU_ACCENT  [UIColor colorWithRed:0xFE/255.0 green:0x2B/255.0 blue:0x54/255.0 alpha:1]
 
-@interface YouRegionPicker : UIViewController <UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate>
-@property (nonatomic, copy) void (^onSelect)(NSDictionary *region);
-@end
-
 @interface YouRegionPicker ()
 @property (nonatomic, strong) UITableView *table;
 @property (nonatomic, strong) UISearchBar *search;
