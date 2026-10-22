@@ -62,9 +62,12 @@ def main():
     print(f"[qa] dylibs: {dylibs}")
 
     # dylib may live in .app root or Frameworks/; otool -L on the main binary shows
-    # @executable_path/... paths — match on basename only
+    # @executable_path/... paths — match on basename only.
+    # Only the injected tweak dylib MUST be linked; stock Apple dylibs
+    # (libswift_*) live in Frameworks/ without being linked from the main binary.
     linked = subprocess.run(["otool", "-L", binary], capture_output=True, text=True).stdout
-    missing_link = [d for d in dylibs if d not in linked]
+    tweak_dylibs = [d for d in dylibs if not d.startswith("libswift_")]
+    missing_link = [d for d in tweak_dylibs if d not in linked]
     assert not missing_link, f"QA FAIL: dylib not linked into binary: {missing_link}"
     print("[qa] dylib load commands: OK")
 
