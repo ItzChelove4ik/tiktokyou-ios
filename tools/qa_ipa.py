@@ -72,13 +72,23 @@ def main():
     print("[qa] dylib load commands: OK")
 
     # 3. hooked classes present in binary (ObjC class names in __DATA __objc_classname)
+    # TikTok 47.x keeps almost all code in Frameworks/MusicallyCore.framework/MusicallyCore
+    # (the main .app/TikTok binary is a 73KB stub) — scan both.
     classnames = set()
-    try:
-        out = subprocess.run(["strings", "-arch", "arm64", binary],
-                             capture_output=True, text=True, timeout=120).stdout
-        classnames = set(out.split())
-    except Exception as e:
-        print(f"[qa] WARN: strings failed: {e}")
+    scan_targets = [binary]
+    frameworks_dir = os.path.join(app_dir, "Frameworks")
+    if os.path.isdir(frameworks_dir):
+        for fw in os.listdir(frameworks_dir):
+            fwbin = os.path.join(frameworks_dir, fw, fw[:-10] if fw.endswith(".framework") else fw)
+            if os.path.isfile(fwbin) and os.path.getsize(fwbin) > 10_000_000:
+                scan_targets.append(fwbin)
+    for tgt in scan_targets:
+        try:
+            out = subprocess.run(["strings", "-arch", "arm64", tgt],
+                                 capture_output=True, text=True, timeout=600).stdout
+            classnames |= set(out.split())
+        except Exception as e:
+            print(f"[qa] WARN: strings failed on {tgt}: {e}")
 
     print("[qa] class check (hooked classes found in binary):")
     found = 0
