@@ -443,19 +443,25 @@ static BOOL shouldFilterAweme(id model) {
         @"/etc/ssh/sshd_config",
     ];
 
+    // BISECT MODE: "mod_disabled" NSUserDefaults key disables ALL feature groups at
+    // ctor time (only ctor + settings entry survive). Used to isolate launch crashes:
+    // if the app starts with mod_disabled=1 set externally, the crash is in a hook group.
+    BOOL modDisabled = [[NSUserDefaults standardUserDefaults] boolForKey:@"mod_disabled"];
+    if (modDisabled) [HookLog log:@"BISECT: mod_disabled=1 — all feature groups skipped"];
+
     // feature groups init with runtime class checks (degrade silently + log)
-    if (classExistsNamed(@"AWEAwemeModel")) {
+    if (!modDisabled && classExistsNamed(@"AWEAwemeModel")) {
         %init(TikTokYouFeedFilter);
         %init(TikTokYouLives);
-    } else {
+    } else if (!classExistsNamed(@"AWEAwemeModel")) {
         [HookLog log:@"AWEAwemeModel not found in this TikTok version — feed filters disabled"];
     }
-    if (classExistsNamed(@"CTCarrier")) {
+    if (!modDisabled && classExistsNamed(@"CTCarrier")) {
         %init(TikTokYouRegion);
-    } else {
+    } else if (!classExistsNamed(@"CTCarrier")) {
         [HookLog log:@"CTCarrier unavailable — region spoof disabled"];
     }
-    if (classExistsNamed(@"SparkViewController")) {
+    if (!modDisabled && classExistsNamed(@"SparkViewController")) {
         %init(TikTokYouSafari);
     }
     if (classExistsNamed(@"TTKSettingsBaseCellPlugin")) {
@@ -463,7 +469,11 @@ static BOOL shouldFilterAweme(id model) {
     } else {
         [HookLog log:@"TTKSettingsBaseCellPlugin not found — mod menu entry unavailable (open via floating button long-press)"];
     }
-    %init(TikTokYouApp);
+    if (!modDisabled) {
+        %init(TikTokYouApp);
+    } else {
+        [HookLog log:@"BISECT: TikTokYouApp (floating hub) skipped"];
+    }
     // JB-bypass: potentially conflicting with TikTok 47.x startup — gated by default,
     // can be enabled via "jb_bypass" BOOL in NSUserDefaults for diagnostics.
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"jb_bypass"]) {
