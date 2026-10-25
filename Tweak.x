@@ -464,7 +464,14 @@ static BOOL shouldFilterAweme(id model) {
         [HookLog log:@"TTKSettingsBaseCellPlugin not found — mod menu entry unavailable (open via floating button long-press)"];
     }
     %init(TikTokYouApp);
-    %init(TikTokYouJBBypass);
+    // JB-bypass: potentially conflicting with TikTok 47.x startup — gated by default,
+    // can be enabled via "jb_bypass" BOOL in NSUserDefaults for diagnostics.
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"jb_bypass"]) {
+        %init(TikTokYouJBBypass);
+        [HookLog log:@"JBBypass hooks enabled (jb_bypass=YES)"];
+    } else {
+        [HookLog log:@"JBBypass hooks SKIPPED by default (launch-crash mitigation, TikTok 47.x)"];
+    }
     %init;
     [HookLog log:@"TikTok You (iOS) loaded, TikTok version: %@", [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"]];
 }
