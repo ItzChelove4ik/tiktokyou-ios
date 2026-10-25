@@ -115,7 +115,8 @@ static BOOL shouldFilterAweme(id model) {
 
 %end // group
 
-// AWEAwemeACLItem: watermark removal (outside group — Logos %orig quirk)
+// AWEAwemeACLItem: watermark removal (group for Logos autoctor workaround)
+%group TikTokYouWatermark
 %hook AWEAwemeACLItem
 - (void)setWatermarkType:(NSUInteger)arg1 {
     if ([BHIManager removeWatermark]) {
@@ -129,6 +130,7 @@ static BOOL shouldFilterAweme(id model) {
     return %orig;
 }
 %end
+%end // group TikTokYouWatermark
 
 // ============================================================
 // Группа: Трансляции off

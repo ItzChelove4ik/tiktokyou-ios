@@ -3,6 +3,7 @@
 #import "TikTokHeaders.h"
 #import "BHIManager.h"
 
+%group TikTokYouDownload
 %hook AWEFeedViewTemplateCell
 %property (nonatomic, strong) JGProgressHUD *hud;
 %property(nonatomic, assign) BOOL elementsHidden;
@@ -655,4 +656,4 @@
     return bestURL;
 }
 %end
-
+%end // group TikTokYouDownload
