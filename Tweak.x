@@ -409,9 +409,6 @@ static BOOL shouldFilterAweme(id model) {
 %end
 %end // group
 
-// ============================================================
-// %ctor
-// ============================================================
 %ctor {
     // PHASE-0 DIAGNOSTIC: no hooks installed, only log. Groups stay uninitialized.
     // (Logos needs the %ctor directive present when named groups exist.)
