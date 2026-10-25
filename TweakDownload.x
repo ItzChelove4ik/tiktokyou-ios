@@ -657,3 +657,7 @@
 }
 %end
 %end // group TikTokYouDownload
+
+%ctor {
+    // hooks installed from Tweak.x %ctor only (PHASE-0: none)
+}
