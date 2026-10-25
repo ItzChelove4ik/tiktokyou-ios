@@ -410,7 +410,8 @@ static BOOL shouldFilterAweme(id model) {
 %end // group
 
 %ctor {
-    // PHASE-0 DIAGNOSTIC: no hooks installed, only log. Groups stay uninitialized.
-    // (Logos needs the %ctor directive present when named groups exist.)
+    // PHASE-0 DIAGNOSTIC: no hooks installed (named groups stay uninitialized),
+    // only a log line. The bare %init; satisfies Logos' autoconstructor check.
     [HookLog log:@"PHASE0: dylib loaded, no hooks installed"];
+    %init;
 }

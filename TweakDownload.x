@@ -659,4 +659,5 @@
 %end // group TikTokYouDownload
 
 %ctor {
+    %init;
 }
