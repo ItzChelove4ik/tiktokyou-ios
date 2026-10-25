@@ -410,8 +410,8 @@ static BOOL shouldFilterAweme(id model) {
 // ============================================================
 // %ctor
 // ============================================================
-%ctor {
+__attribute__((constructor)) static void BHTikTokPhase0Ctor(void) {
     // PHASE-0 DIAGNOSTIC: no hooks installed at all, only a log line.
-    // If app crashes here still → problem is dylib load/substrate, not hooking.
+    // If app crashes here still -> problem is dylib load/substrate, not hooking.
     [HookLog log:@"PHASE0: dylib loaded, no hooks installed"];
 }
