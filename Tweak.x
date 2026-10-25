@@ -89,6 +89,7 @@ static BOOL shouldFilterAweme(id model) {
 // ============================================================
 // Группа: Реклама + фильтры контента (AWEAwemeModel)
 // ============================================================
+#if 0 // PHASE-0: group disabled
 %group TikTokYouFeedFilter
 %hook AWEAwemeModel
 - (id)initWithDictionary:(id)arg1 error:(id *)arg2 {
@@ -114,8 +115,10 @@ static BOOL shouldFilterAweme(id model) {
 %end
 
 %end // group
+#endif
 
 // AWEAwemeACLItem: watermark removal (group for Logos autoctor workaround)
+#if 0 // PHASE-0: group disabled
 %group TikTokYouWatermark
 %hook AWEAwemeACLItem
 - (void)setWatermarkType:(NSUInteger)arg1 {
@@ -131,10 +134,12 @@ static BOOL shouldFilterAweme(id model) {
 }
 %end
 %end // group TikTokYouWatermark
+#endif
 
 // ============================================================
 // Группа: Трансляции off
 // ============================================================
+#if 0 // PHASE-0: group disabled
 %group TikTokYouLives
 %hook AWEAwemeModel
 - (void)live_callInitWithDictyCategoryMethod:(id)arg1 {
@@ -166,10 +171,12 @@ static BOOL shouldFilterAweme(id model) {
 }
 %end
 %end // group
+#endif
 
 // ============================================================
 // Группа: Регион (полный блок из базы; дефолт KZ сохранён)
 // ============================================================
+#if 0 // PHASE-0: group disabled
 %group TikTokYouRegion
 %hook CTCarrier
 - (NSString *)mobileCountryCode {
@@ -232,10 +239,12 @@ static BOOL shouldFilterAweme(id model) {
 }
 %end
 %end // group
+#endif
 
 // ============================================================
 // Группа: Ссылки в Safari (Spark)
 // ============================================================
+#if 0 // PHASE-0: group disabled
 %group TikTokYouSafari
 %hook SparkViewController
 - (void)loadURL:(id)arg1 withString:(id)arg2 {
@@ -249,10 +258,12 @@ static BOOL shouldFilterAweme(id model) {
 }
 %end
 %end // group
+#endif
 
 // ============================================================
 // Группа: пункт меню в TikTok Settings + чистка share-ссылок
 // ============================================================
+#if 0 // PHASE-0: group disabled
 %group TikTokYouSettingsEntry
 %hook TTKSettingsBaseCellPlugin
 - (void)didSelectItemAtIndex:(NSInteger)index {
@@ -310,10 +321,12 @@ static BOOL shouldFilterAweme(id model) {
 }
 %end
 %end // group
+#endif
 
 // ============================================================
 // Группа: Плавающий хаб + запуск (AppDelegate)
 // ============================================================
+#if 0 // PHASE-0: group disabled
 %group TikTokYouApp
 %hook AppDelegate
 - (_Bool)application:(UIApplication *)application didFinishLaunchingWithOptions:(id)arg2 {
@@ -339,10 +352,12 @@ static BOOL shouldFilterAweme(id model) {
 }
 %end
 %end // group
+#endif
 
 // ============================================================
 // Группа: анти-детект джейлбрейка (из базы, не трогать)
 // ============================================================
+#if 0 // PHASE-0: group disabled
 %group TikTokYouJBBypass
 %hook NSFileManager
 -(BOOL)fileExistsAtPath:(id)arg1 {
@@ -408,10 +423,9 @@ static BOOL shouldFilterAweme(id model) {
 - (id)setMode { return (id (^)(id)) ^{}; }
 %end
 %end // group
+#endif
 
 %ctor {
-    // PHASE-0 DIAGNOSTIC: no hooks installed (named groups stay uninitialized),
-    // only a log line. The bare %init; satisfies Logos' autoconstructor check.
+    // PHASE-0: all groups #if 0'd out; dylib loads, logs, does nothing.
     [HookLog log:@"PHASE0: dylib loaded, no hooks installed"];
-    %init;
 }

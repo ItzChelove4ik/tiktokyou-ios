@@ -3,6 +3,7 @@
 #import "TikTokHeaders.h"
 #import "BHIManager.h"
 
+#if 0 // PHASE-0: group disabled
 %group TikTokYouDownload
 %hook AWEFeedViewTemplateCell
 %property (nonatomic, strong) JGProgressHUD *hud;
@@ -657,7 +658,8 @@
 }
 %end
 %end // group TikTokYouDownload
+#endif
+
 
 %ctor {
-    %init;
 }
